@@ -1050,7 +1050,7 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 
 - **Sponsors**: A huge thank you to the following sponsors for their support of this project!
 
-  [![Sponsors](https://afdian.730888.xyz/image)](https://afdian.com/a/marseventh)
+  [![Sponsors](https://afdian.730888.xyz/image)](https://afdian.com/a/drag0n)
 
 - **Contributors**: Thank you to the following contributors for their selfless contributions to this project!
 

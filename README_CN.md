@@ -1051,7 +1051,7 @@ Apache License 2.0
 
 - **赞助者**：非常感谢以下赞助者对本项目的支持！！
 
-   [![赞助者](https://afdian.730888.xyz/image)](https://afdian.com/a/marseventh)
+   [![赞助者](https://afdian.730888.xyz/image)](https://afdian.com/a/drag0n)
 
 - **Contributors**：感谢以下贡献者对本项目的无私贡献！
   [![Contributors](https://contrib.rocks/image?repo=ling-drag0n/CloudPaste)](https://github.com/ling-drag0n/CloudPaste/graphs/contributors)
