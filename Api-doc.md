@@ -780,7 +780,7 @@ X-Custom-Auth-Key: <api_key>
         "max_upload_size": 100,
         "default_paste_expiry": 7,
         "default_file_expiry": 7,
-        "webdav_upload_mode": "auto"
+        "webdav_upload_mode": "direct"
       },
       "success": true
     }
@@ -795,7 +795,7 @@ X-Custom-Auth-Key: <api_key>
       "max_upload_size": 100, // 可选，最大上传大小（MB）
       "default_paste_expiry": 7, // 可选，默认文本过期天数
       "default_file_expiry": 7, // 可选，默认文件过期天数
-      "webdav_upload_mode": "auto" // 可选，WebDAV上传模式：auto/proxy/multipart/direct
+      "webdav_upload_mode": "direct" // 可选，WebDAV上传模式：multipart/direct
     }
     ```
   - 响应：更新后的系统设置
