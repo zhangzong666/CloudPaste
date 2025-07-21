@@ -97,7 +97,7 @@ export class S3StorageDriver extends BaseDriver {
     // 委托给目录操作模块
     return await this.directoryOps.listDirectory(s3SubPath, {
       mount,
-      subPath: path, // 使用原始路径用于缓存键生成
+      subPath, // 使用正确的子路径用于缓存键生成
       path,
     });
   }
