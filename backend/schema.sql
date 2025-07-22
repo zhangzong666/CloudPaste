@@ -159,6 +159,8 @@ CREATE TABLE storage_mounts (
   created_by TEXT NOT NULL,             -- 创建者标识
   sort_order INTEGER DEFAULT 0,         -- 显示排序顺序
   cache_ttl INTEGER DEFAULT 300,        -- 缓存时间(秒)，提高性能
+  web_proxy BOOLEAN DEFAULT 0,          -- 网页预览、下载和直接链接是否通过中转
+  webdav_policy TEXT DEFAULT '302_redirect', -- WebDAV策略：'302_redirect' 或 'native_proxy'
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   last_used DATETIME                    -- 最后使用时间

@@ -245,7 +245,7 @@ fsRoutes.get("/api/fs/get", async (c) => {
     const fileSystem = new FileSystem(mountManager);
 
     // 调用FileSystem的getFileInfo方法
-    const result = await fileSystem.getFileInfo(path, userIdOrInfo, userType);
+    const result = await fileSystem.getFileInfo(path, userIdOrInfo, userType, c.req.raw);
 
     return c.json({
       code: ApiStatus.SUCCESS,

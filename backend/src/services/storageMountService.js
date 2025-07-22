@@ -22,6 +22,7 @@ export async function getMountsByAdmin(db, adminId, includeInactive = false) {
       SELECT
         id, name, storage_type, storage_config_id, mount_path,
         remark, is_active, created_by, sort_order, cache_ttl,
+        web_proxy, webdav_policy,
         created_at, updated_at, last_used
       FROM ${DbTables.STORAGE_MOUNTS}
       ${whereClause}
@@ -50,6 +51,7 @@ export async function getAllMounts(db, includeInactive = true) {
       SELECT
         id, name, storage_type, storage_config_id, mount_path,
         remark, is_active, created_by, sort_order, cache_ttl,
+        web_proxy, webdav_policy,
         created_at, updated_at, last_used
       FROM ${DbTables.STORAGE_MOUNTS}
       ${whereClause}
@@ -74,9 +76,10 @@ export async function getMountByIdForAdmin(db, id, adminId) {
   const mount = await db
     .prepare(
       `
-      SELECT 
-        id, name, storage_type, storage_config_id, mount_path, 
+      SELECT
+        id, name, storage_type, storage_config_id, mount_path,
         remark, is_active, created_by, sort_order, cache_ttl,
+        web_proxy, webdav_policy,
         created_at, updated_at, last_used
       FROM ${DbTables.STORAGE_MOUNTS}
       WHERE id = ?
@@ -105,9 +108,10 @@ export async function getMountByIdForApiKey(db, id, apiKeyId) {
   const mount = await db
     .prepare(
       `
-      SELECT 
-        id, name, storage_type, storage_config_id, mount_path, 
+      SELECT
+        id, name, storage_type, storage_config_id, mount_path,
         remark, is_active, created_by, sort_order, cache_ttl,
+        web_proxy, webdav_policy,
         created_at, updated_at, last_used
       FROM ${DbTables.STORAGE_MOUNTS}
       WHERE id = ? AND created_by = ? AND is_active = 1
@@ -194,6 +198,8 @@ function validateMountPath(mountPath) {
  * @param {boolean} [mountData.is_active=true] - 是否激活
  * @param {number} [mountData.sort_order=0] - 排序顺序
  * @param {number} [mountData.cache_ttl=300] - 缓存时间（秒）
+ * @param {boolean} [mountData.web_proxy=false] - 是否启用网页代理
+ * @param {string} [mountData.webdav_policy='302_redirect'] - WebDAV策略
  * @param {string} creatorId - 创建者ID
  * @returns {Promise<Object>} 创建的挂载点完整信息
  * @throws {HTTPException} 400 - 参数错误，包括缺少必填字段、路径格式错误等
@@ -239,6 +245,8 @@ export async function createMount(db, mountData, creatorId) {
 
   // 处理可选字段
   const isActive = mountData.is_active === true || mountData.is_active === undefined ? 1 : 0;
+  const webProxy = mountData.web_proxy === true ? 1 : 0;
+  const webdavPolicy = mountData.webdav_policy || "302_redirect";
 
   // 设置排序顺序和缓存时间
   const sortOrder = mountData.sort_order || 0;
@@ -251,15 +259,30 @@ export async function createMount(db, mountData, creatorId) {
       INSERT INTO ${DbTables.STORAGE_MOUNTS} (
         id, name, storage_type, storage_config_id, mount_path,
         remark, is_active, created_by, sort_order, cache_ttl,
+        web_proxy, webdav_policy,
         created_at, updated_at
       ) VALUES (
         ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?,
+        ?, ?,
         CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
       )
     `
     )
-    .bind(id, mountData.name, mountData.storage_type, mountData.storage_config_id || null, mountData.mount_path, mountData.remark || null, isActive, creatorId, sortOrder, cacheTtl)
+    .bind(
+      id,
+      mountData.name,
+      mountData.storage_type,
+      mountData.storage_config_id || null,
+      mountData.mount_path,
+      mountData.remark || null,
+      isActive,
+      creatorId,
+      sortOrder,
+      cacheTtl,
+      webProxy,
+      webdavPolicy
+    )
     .run();
 
   // 返回创建的挂载点
@@ -292,6 +315,8 @@ export async function createMount(db, mountData, creatorId) {
  * @param {boolean} [updateData.is_active] - 是否激活
  * @param {number} [updateData.sort_order] - 排序顺序
  * @param {number} [updateData.cache_ttl] - 缓存时间（秒）
+ * @param {boolean} [updateData.web_proxy] - 是否启用网页代理
+ * @param {string} [updateData.webdav_policy] - WebDAV策略
  * @param {string} creatorId - 创建者ID或管理员ID
  * @param {boolean} isAdmin - 是否为管理员操作，为true时不检查创建者
  * @returns {Promise<void>}
@@ -402,6 +427,16 @@ export async function updateMount(db, id, updateData, creatorId, isAdmin = false
   if (updateData.cache_ttl !== undefined) {
     updateFields.push("cache_ttl = ?");
     updateParams.push(updateData.cache_ttl);
+  }
+
+  if (updateData.web_proxy !== undefined) {
+    updateFields.push("web_proxy = ?");
+    updateParams.push(updateData.web_proxy === true ? 1 : 0);
+  }
+
+  if (updateData.webdav_policy !== undefined) {
+    updateFields.push("webdav_policy = ?");
+    updateParams.push(updateData.webdav_policy);
   }
 
   // 如果没有更新字段，直接返回

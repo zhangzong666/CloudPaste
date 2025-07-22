@@ -63,6 +63,7 @@ userStorageMountRoutes.get("/api/user/mounts/:id", baseAuthMiddleware, requireMo
         `SELECT
           id, name, storage_type, storage_config_id, mount_path,
           remark, is_active, created_by, sort_order, cache_ttl,
+          web_proxy, webdav_policy,
           created_at, updated_at, last_used
          FROM storage_mounts
          WHERE id = ? AND is_active = 1`
