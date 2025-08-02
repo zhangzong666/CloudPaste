@@ -109,7 +109,7 @@ export const DEFAULT_SETTINGS = {
     options: null,
     sort_order: 5,
     flag: SETTING_FLAGS.PUBLIC,
-    default_value: "false",
+    default_value: "true",
   },
 
   // 预览设置组
